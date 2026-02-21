@@ -1,0 +1,38 @@
+name: CI/CD BookShop
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: ./mvnw clean package -DskipTests
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: 37.27.214.35
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASS }}
+          script: |
+            cd /home/${{ secrets.SERVER_USER }}/bookshop
+            git pull origin main
+            echo "DB_USER=${{ secrets.DB_USER }}" > .env
+            echo "DB_PASS=${{ secrets.DB_PASS }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            docker compose up -d --build
+            sleep 15
+            curl -f http://localhost:8080/api/public/categories && echo "✅ Health check OK"
