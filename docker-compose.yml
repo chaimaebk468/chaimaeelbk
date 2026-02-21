@@ -1,18 +1,51 @@
+#version: '3.8'
+#
+#services:
+#  app:
+#    build: .
+#    container_name: bookshop-app
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - DB_URL=jdbc:mysql://host.docker.internal:3306/bookshop?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+#      - DB_USER=${DB_USER}
+#      - DB_PASS=${DB_PASS}
+#      - JWT_SECRET=${JWT_SECRET}
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+#    env_file:
+#      - .env
+#    restart: unless-stopped
+
 version: '3.8'
 
 services:
+  db:
+    image: mysql:8.0
+    container_name: bookshop-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1111
+      MYSQL_DATABASE: bookshop
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1111"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   app:
     build: .
     container_name: bookshop-app
     ports:
       - "8080:8080"
     environment:
-      - DB_URL=jdbc:mysql://host.docker.internal:3306/bookshop?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - JWT_SECRET=${JWT_SECRET}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    env_file:
-      - .env
-    restart: unless-stopped
+      - DB_URL=jdbc:mysql://db:3306/bookshop?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - DB_USER=root
+      - DB_PASS=1111
+      - JWT_SECRET=chaimaeelbkSecretKey123456789abcdef
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
