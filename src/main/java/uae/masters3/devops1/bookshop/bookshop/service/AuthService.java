@@ -20,7 +20,7 @@ public class AuthService {
     public LoginResponse login(LoginRequest req) {
 
         User user = repo.findByEmail(req.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if(!encoder.matches(req.getPassword(), user.getPassword()))
             throw new RuntimeException("bad credentials");
