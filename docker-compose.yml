@@ -13,4 +13,6 @@ services:
       - JWT_SECRET=${JWT_SECRET}
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     restart: unless-stopped
