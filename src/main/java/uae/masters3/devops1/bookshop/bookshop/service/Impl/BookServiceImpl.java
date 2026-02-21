@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import uae.masters3.devops1.bookshop.bookshop.dto.BookResponse;
 import uae.masters3.devops1.bookshop.bookshop.entity.Book;
+import uae.masters3.devops1.bookshop.bookshop.exception.ResourceNotFoundException;
 import uae.masters3.devops1.bookshop.bookshop.repository.BookRepository;
 import uae.masters3.devops1.bookshop.bookshop.service.BookService;
 
@@ -25,11 +26,13 @@ public class BookServiceImpl implements BookService {
                 .map(this::mapToResponse);
     }
 
+
+
+
     @Override
     public BookResponse getBookById(Long id) {
-        // Utilisation d'une exception (tu pourras créer ResourceNotFoundException plus tard)
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livre introuvable avec l'ID : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Livre introuvable avec l'ID : " + id));
         return mapToResponse(book);
     }
 
