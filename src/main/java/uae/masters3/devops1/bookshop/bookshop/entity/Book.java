@@ -1,4 +1,5 @@
 package uae.masters3.devops1.bookshop.bookshop.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -23,6 +24,9 @@ public class Book {
 
     @Column(length = 2000)
     private String description;
+
+    @JsonBackReference   // ← côté enfant (ne sera pas sérialisé)
+
 
     @ManyToOne
     @JoinColumn(name = "category_id")
