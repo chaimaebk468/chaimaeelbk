@@ -38,17 +38,11 @@ public class Book {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public Category getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
 
 
     public double getPrice() {
@@ -66,4 +60,20 @@ public class Book {
     public String getDescription() {
         return description;
     }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public void setAuthor(String author) { this.author = author; }
+
+    public void setPrice(double price) { this.price = price; }
+
+    public void setStock(int stock) { this.stock = stock; }
+
+    public void setDescription(String description) { this.description = description; }
+
+    public void setCategory(Category category) { this.category = category; }
 }
+
+
