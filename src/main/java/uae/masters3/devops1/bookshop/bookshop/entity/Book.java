@@ -20,6 +20,7 @@ public class Book {
 
     private int stock;
 
+
     @Column(length = 2000)
     private String description;
 
@@ -47,5 +48,22 @@ public class Book {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
