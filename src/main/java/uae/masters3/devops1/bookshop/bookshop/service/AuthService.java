@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uae.masters3.devops1.bookshop.bookshop.dto.LoginRequest;
 import uae.masters3.devops1.bookshop.bookshop.dto.LoginResponse;
+import uae.masters3.devops1.bookshop.bookshop.dto.RegisterRequest;
+import uae.masters3.devops1.bookshop.bookshop.entity.Role;
 import uae.masters3.devops1.bookshop.bookshop.entity.User;
 import uae.masters3.devops1.bookshop.bookshop.repository.UserRepository;
 import uae.masters3.devops1.bookshop.bookshop.security.JwtService;
@@ -29,4 +31,24 @@ public class AuthService {
 
         return new LoginResponse(token);
     }
+
+    public LoginResponse register(RegisterRequest req) {
+
+        if (repo.existsByEmail(req.getEmail())) {
+            throw new RuntimeException("Email already used");
+        }
+
+        User user = User.builder()
+                .email(req.getEmail())
+                .password(encoder.encode(req.getPassword()))
+                .role(Role.USER)
+                .build();
+
+        repo.save(user);
+
+        String token = jwt.generateToken(user);
+
+        return new LoginResponse(token);
+    }
+
 }
